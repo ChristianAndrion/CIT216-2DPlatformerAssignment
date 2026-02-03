@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -152,5 +153,21 @@ public class PlayerController : MonoBehaviour
             return Vector2.left;
         }
 
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("boundary"))
+        {
+            GameManager.instance.DecreaseLives(1);
+            Debug.Log("Lives: " + GameManager.instance.GetLives());
+            Invoke("KillPlayer", 1f); //Reload current scene
+        }
+        
+    }
+
+    void KillPlayer()
+    {
+        SceneManager.LoadScene(0);
     }
 }
