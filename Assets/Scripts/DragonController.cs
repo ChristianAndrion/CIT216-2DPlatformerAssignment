@@ -31,8 +31,9 @@ public class DragonController : MonoBehaviour
 
     public float distance = 3f;
     public float movementMultiplier;
+    public float raycastDistance = 2f;
 
-    private int counter = 5;
+    private int health = 100;
 
     private void Start()
     {
@@ -42,19 +43,32 @@ public class DragonController : MonoBehaviour
     {
         while (true)
         {
-            transform.Translate(new Vector2(0, distance * movementMultiplier));
+            transform.Translate(new Vector2(distance * movementMultiplier,0));
             //counter--;
 
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+            RaycastHit2D hitDown = Physics2D.Raycast(transform.position, Vector2.down, raycastDistance);
+            RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, Vector2.left, raycastDistance);
             Debug.DrawRay(transform.position, Vector2.down, Color.red, 1f);//Draws line in scene for 1 second
             
-            if (!hit)
+            if (!hitDown || hitLeft) 
             {
                 movementMultiplier *= -1; //Move in opposite direction
                 //counter = 5; // Reset counter
             }
 
             yield return new WaitForSeconds(.25f);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("bullet"))
+        {
+            health -= 25;
+            if(health <= 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

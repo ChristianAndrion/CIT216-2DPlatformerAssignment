@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     private bool jumpPressed = false;
     private bool isGrounded = true;
 
+    private float health = 100;
+
     public float moveSpeed = 0.05f;
     public float jumpForce = 8f;
     [Tooltip("Air Friction")]
@@ -159,8 +161,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("boundary"))
         {
-            GameManager.instance.DecreaseLives(1);
-            Debug.Log("Lives: " + GameManager.instance.GetLives());
+            anim.SetBool("isDead", true);
             Invoke("KillPlayer", 1f); //Reload current scene
         }
         
@@ -168,6 +169,31 @@ public class PlayerController : MonoBehaviour
 
     void KillPlayer()
     {
+        GameManager.instance.DecreaseLives(1);
+        Debug.Log("Lives: " + GameManager.instance.GetLives());
         SceneManager.LoadScene(0);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("enemy"))
+        {
+            health -= 25;
+            if (health <= 0)
+            {
+                pi.enabled = false;
+                //pi.DeactivateInput();
+
+                rb.constraints = RigidbodyConstraints2D.FreezeAll;
+                
+                anim.SetBool("isDead", true);
+                Invoke("KillPlayer", 1f);
+            }
+        }
+
+        else if(collision.gameObject.CompareTag("console"))
+        {
+
+        }
     }
 }

@@ -22,9 +22,11 @@ public class BulletController : MonoBehaviour
         Destroy(gameObject); //Dont use "this" as it refers to the component/script
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        if(!collision.gameObject.CompareTag("Player"))
+        {
+            Destroy(gameObject); //gameObject refers to game object the script is attatched to
+        }
     }
 }
